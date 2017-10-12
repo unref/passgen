@@ -1,0 +1,147 @@
+body, html {
+	margin: 0px;
+	margin-top: 5px;
+	padding: 0px;
+}
+
+.container *{ padding: 5px;}
+
+.passgen-form *{ 
+	box-sizing: border-box;
+}
+
+.container{
+	margin: auto;
+	width: 300px;
+	font-family: helvetica, sans-serif;
+	border: 2px solid #5566ff;
+	padding: 0px;
+	border-radius: 3px;
+	color: #555555;
+}
+
+.passgen-form__output,
+.passgen-form__fieldset{
+	/*prevents resize by X-axis*/
+	resize: vertical;
+	border: 1px solid #5566FF;
+	width: 100%;
+}
+
+.note-copied{
+	border: 1px dashed #3344ff;
+	border-radius: 3px;
+	display: inline-block;
+	padding: 5px;
+	position: absolute;
+	font-family: Helvetica, Arial, sans-serif;
+	background-color: #7799ee;
+	color: #ffffff;
+}
+
+.passgen-form__btn{
+	border: 1px solid #5566FF;
+	background: #ffffff;
+	border-radius: 5px;
+	color: #5566FF;
+	cursor: pointer;
+}
+
+.passgen-form__btn[name="generate-button"]{
+	background-color: #5566FF;
+	color: #ffffff;
+}
+
+.passgen-form__fieldset{
+	margin-left: 0px;
+}
+
+.passgen-form__chkbox,
+.passgen-form__fieldset label{
+	cursor: pointer;
+}
+
+.passgen-form__fieldset label{
+	padding-left: 0px;
+}
+
+.passgen-form__len{
+	padding: 0px;
+	border: 1px solid #5566FF;
+	background-color: transparent;
+	border-radius: 3px;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+	appearance:none;
+	width: 60px;
+	height: 35px;
+	padding: 2px;
+}
+
+/* styling select tag, add own arrow */
+.select-wrapper { 
+	display: inline;
+	position: relative;
+}
+.select-wrapper:after {
+	content: '< >';
+	color: #aaa;
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	transform: rotate(90deg);
+	right: 8px; 
+	top: 2px;
+	padding: 2px 2px 2px 0px;
+	border-bottom: 1px solid #ddd;
+	position: absolute;
+	pointer-events: none;
+}
+
+
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px){
+
+	.container{
+		font-size: 65px; 
+		width: 960px;
+		border-width: 6px;
+		border: none;
+	}
+
+	.passgen-form__output,
+	.passgen-form__btn{
+		font-size: 65px;
+		padding: 35px;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
+	.note-copied{
+		border-radius: 10px;
+		font-size: 65px;
+		padding: 15px;
+	}
+
+	.passgen-form__btn{
+		border-radius: 15px;
+	}
+
+	.passgen-form__len{
+		font-size: 65px;
+		-webkit-appearance: none;
+		padding: 25px;
+		width: 220px;
+		height: 125px;
+	}
+
+	.passgen-form__chkbox {
+		width: 100px;
+		height: 100px;
+	}
+	.passgen-form__chkbox + label{
+		font-size: 100px;
+		font-weight: lighter;
+	}
+}
