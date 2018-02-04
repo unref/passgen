@@ -10,7 +10,11 @@
   "author": "Nikolay G <post@noks.ga> (https://github.com/pinepike)",
   "license": "MIT",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1",
     "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^4.1.0"
+    "gulp-autoprefixer": "^4.1.0",
+    "gulp-babel": "^7.0.1"
   }
 }

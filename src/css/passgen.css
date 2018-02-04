@@ -52,7 +52,8 @@ html {
 }
 
 .passgen-form__btn{
-	border: 1px solid #5566FF;
+	/* border: 1px solid #5566FF; */
+	border: none;
 	background: #ffffff;
 	border-radius: 5px;
 	color: #5566FF;
@@ -61,12 +62,16 @@ html {
 
 .passgen-form__btn-generate{
 	display: block;
-	background-color: #5566FF;
+	/* background-color: #5566FF; */
+  background: rgb(54, 162, 235);
+	background:
+		linear-gradient(315deg, rgb(50, 50, 255), rgb(60, 255, 60));
 	color: #ffffff;
 	margin: 0 auto;
 	font-size: 1.5em;
-	padding: 0.15em 0.85em;
+	padding: 0.25em 1.5em;
 	margin-bottom: 1em;
+	text-transform: uppercase;
 }
 
 .passgen-form__fieldset{
