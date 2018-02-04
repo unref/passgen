@@ -1,0 +1,16 @@
+{
+  "name": "passgen",
+  "version": "1.0.0",
+  "description": "Javascript based password generator, full client side generation mechanism",
+  "main": "gulpfile.js",
+  "scripts": {
+    "livereload": "gulp livereload"
+  },
+  "keywords": [],
+  "author": "Nikolay G <post@noks.ga> (https://github.com/pinepike)",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.1.0"
+  }
+}

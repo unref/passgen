@@ -1,0 +1,117 @@
+body,
+html {
+	margin: 0px;
+	padding: 0px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+}
+
+.passgen-form *{
+	box-sizing: border-box;
+}
+
+.passgen-form input[type="button"]{
+	appearance: none;
+}
+
+.container{
+	margin: auto;
+	max-width: 300px;
+	font-family: helvetica, sans-serif;
+	padding: 0px;
+	border-radius: 3px;
+	color: #555555;
+	padding-top: 1em;
+}
+
+.passgen-form__output,
+.passgen-form__fieldset{
+	/*prevents resize by X-axis*/
+	resize: vertical;
+	border: none;
+	width: 100%;
+}
+
+.passgen-form__output{
+	cursor: pointer;
+	text-align: center;
+	font-size: 1.5em;
+	padding: 1em 0;
+	margin-bottom: 1em;
+}
+
+.note-copied{
+	border: 1px dashed #3344ff;
+	border-radius: 3px;
+	display: inline-block;
+	padding: 5px;
+	position: absolute;
+	font-family: Helvetica, Arial, sans-serif;
+	background-color: #7799ee;
+	color: #ffffff;
+}
+
+.passgen-form__btn{
+	border: 1px solid #5566FF;
+	background: #ffffff;
+	border-radius: 5px;
+	color: #5566FF;
+	cursor: pointer;
+}
+
+.passgen-form__btn-generate{
+	display: block;
+	background-color: #5566FF;
+	color: #ffffff;
+	margin: 0 auto;
+	font-size: 1.5em;
+	padding: 0.15em 0.85em;
+	margin-bottom: 1em;
+}
+
+.passgen-form__fieldset{
+	margin-left: 0px;
+}
+
+.passgen-form__chkbox,
+.passgen-form__fieldset label{
+	cursor: pointer;
+}
+
+.passgen-form__chkbox {
+	transform: translate(-35%, -25%) scale(1.5);
+	margin-bottom: 1em;
+}
+
+.passgen-form__fieldset label{
+	margin-right: .75em;
+}
+
+.passgen-form__len{
+	font-size: 1.5em;
+	margin-bottom: 1em;
+}
+
+.passgen__checkbox-list {
+	text-align: left;
+	font-size: 1.5em;
+	width: 45%;
+	float: right;
+}
+
+.select-wrapper {
+	text-align: right;
+	width: 45%;
+	float: left;
+}
+
+.clearfix:after{
+	content: '';
+	display: block;
+	clear: both;
+}
+
+
+@media screen and (max-width : 480px){
+
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>passgen</title>
+	<meta name="viewport" content="widt=device-width, initial-scale=1.0">
+	<!-- Allow web app to be run in full-screen mode. -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<!-- Make the app title different than the page title. -->
+	<meta name="apple-mobile-web-app-title" content="passgen">
+	<!-- iPhone 6 Plus icon -->
+	<link href="apple-touch-icon.png" sizes="120x120" rel="apple-touch-icon-precomposed">
+	<link rel="stylesheet" type="text/css" href="css/passgen.css">
+</head>
+<body>
+
+<div class="container">
+	<form class="passgen-form" name="passgen-form">
+		<input type="text" class="passgen-form__output" type="text" name="output"></input>
+		<input class="passgen-form__btn passgen-form__btn-generate" type="button" name="generate-button" value="Generate">
+		<fieldset class="passgen-form__fieldset">
+			<div class="select-wrapper">
+				<!-- this selector should genereate JS side -->
+				<select id="pass-length" name="pass-length" class="passgen-form__len">
+					<option value="8">8</option>
+					<option value="16" selected>16</option>
+					<option value="24">24</option>
+					<option value="32">32</option>
+					<option value="48">48</option>
+					<option value="64">64</option>
+					<option value="96">96</option>
+					<option value="128">128</option>
+				</select>
+			</div>
+
+			<div class="passgen__checkbox-list">
+				<div class="checkbox-group">
+					<input id="numbers" class="passgen-form__chkbox"
+						type="checkbox" checked><label for="numbers">0-9</label>
+				</div>
+				<div class="checkbox-group">
+					<input id="alpha-low" class="passgen-form__chkbox"
+						type="checkbox" checked><label for="alpha-low">a-z</label>
+				</div>
+				<div class="checkbox-group">
+					<input id="alpha-upper" class="passgen-form__chkbox"
+						type="checkbox" checked><label for="alpha-upper">A-Z</label>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+
+<script type="text/javascript" src="js/passgen.js"></script>
+
+</body>
+</html>
