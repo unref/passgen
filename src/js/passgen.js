@@ -1,229 +1,304 @@
-;(function(){
-"use strict";
+; (function () {
+	window.addEventListener('DOMContentLoaded', function () {
+		"use strict";
 
-/*
-	Name: passgen.
-	Author: pinepike.
-	Description: Password generator.
+		// new PasswordGeneratorWidget({
+		//    length: 'length of password',
+		//    id: 'id of widget container element'
+		// })
 
-	License: MIT.
-*/
+		class PasswordGeneratorWidget {
+			constructor(options){
+				options = options || {};
+				this.length = options.length || 16;
+				this.minLength = this._defaults().minLength || 6;
+				this.maxLength = this._defaults().maxLength || 256;
+				this.id = options.id;
+				if (!options.id) this.el = options.el || 'body';
+				this.init();
+			}
 
-/**
- * start global variables desriptions section
-*/
+			urlparser (url) {
+				let a = document.createElement('a');
+				a.href = url;
+				return {
+					protocol: a.protocol,
+					hostname: a.hostname,
+					port: a.port,
+					pathname: a.pathname,
+					query: a.search,
+					hash: a.hash,
+					host: a.host
+				}
+			}
 
-var defaultPasswordLength = 16;
+			errorHandler (msg, url, row, col, error) {
+				let err = {
+					message: msg,
+					url: url,
+					row: row,
+					col: col
+				};
+				console.error(err);
+				this.renderError(err);
+				return false;
+			}
 
-var charsetString = "";
-
-var charset = {
-	"alpha-upper": {
-		value: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-		checked: true },
-	"alpha-low": {
-		value: "abcdefghijklmnopqrstuvwxyz",
-		checked: true },
-	"numbers": {
-		value: "0123456789",
-		checked: true }
-};
-/**
- * end global variables desriptions section
-*/
-
-
-/**
- * start funstions desription section
-*/
-
-
-//reset charset for set of items
-var resetCharset = function(charset){
-	for(var set in charset){
-		charset[set].checked = true;
-	};
-};
-
-//reset form to default values
-var resetForm = function(form){
-	for(var k = 0, lenOfForm = form.length; k < lenOfForm; k++) {
-		if(form[k].type === "checkbox" && !form[k].checked) {
-			form[k].checked = true;
-		}
-	}
-};
-
-//get charset string for items that checked
-var getCharsetString = function(charset){
-	var res = "";
-	for(var set in charset){
-		if(charset[set].checked){
-			res += charset[set].value;
-		}
-	};
-	return res;
-};
-
-//generate password function
-var generatePassword = function(string, length) {
-	var result = "";
-	for(var i = 0; i < length; i++) {
-		result += string.charAt(Math.floor(Math.random() * (string.length - 1)));
-	}
-	return result;
-}
-
-// checks whether the correct number of checkboxes set
-var checkForm = function(elem, form, charset){
-	var countSelectedCheckboxes = 0;
-
-	// counts number checked checkboxes
-	for(var k = 0, lenOfForm = form.length; k < lenOfForm; k++) {
-		if(form[k].type === "checkbox" && form[k].checked){
-			countSelectedCheckboxes += 1;
-		}
-	}
-
-	// at least one checkbox should be checked
-	if( countSelectedCheckboxes >= 1 ){
-		charset[elem.id].checked = !charset[elem.id].checked;
-	} else {
-		elem.checked = !elem.checked;
-	}
-};
-
-//shows "copied" notification
-var showNotification = function(elem){
-	if(document.getElementsByClassName( 'note-copied' ).length === 0){
-
-		//creates notification message
-		var elemCoords = elem.getBoundingClientRect();
-		var popup = document.createElement('div');
-		var timer;
-
-		popup.classList.toggle( 'note-copied' );
-		popup.appendChild( document.createTextNode( 'Copied' ) );
-
-		//adds popup before changing position
-		//because of popup have not coordinates before
-		//it appended to document
-		document.body.appendChild(popup);
-
-		//sets notification coordinates
-		popup.style.left = elemCoords.right
-			- Math.floor( ( 1 + 1 / 10 ) * popup.offsetWidth )
-			+ 'px';
-		popup.style.top = elemCoords.top
-			+ elem.offsetHeight / 2
-			- popup.offsetHeight / 2
-			+ 'px';
-
-		//sets a notification display timeout
-		timer = setTimeout(function(){
-			document.body.removeChild(popup);
-		}, 1000);
-
-	}
-};
+			renderError (err) {
+				let container = document.createElement('div')
+				container.classList.add('password-generator__error');
+				container.textContent = [
+					this.urlparser(err.url).pathname || ''
+					, err.row || ''
+					, err.col || ''
+					, err.message || ''
+				].join(':');
+				document.body.appendChild(container);
+			}
 
 
-/**
- * end funstions desriptions section
-*/
+			init () {
+				window.onerror = this.errorHandler.bind(this);
 
+				this.widget = this.generateWidgetContent(this.id);
 
-/**
- * start describtion main loop
-*/
-var main = function(){
-	window.addEventListener("load", function(){
+				let button = this.widget.querySelector('.password-generator__button');
+				let password = this.widget.querySelector('.password-generator__password');
+				let length = this.widget.querySelector('.password-generator__length');
 
-		//shows notification after password was copied
-		document.addEventListener('copy', function(e){
-			var elem = e.target;
-			showNotification(elem);
-		});
+				button.addEventListener('click', this.buttonClickHandler.bind(this));
 
-		//handles click event on textarea field
-		//contains generated password
-		document.addEventListener('mouseup', function(e){
+				//shows notification after password was copied
+				this.widget.addEventListener('copy', this._onCopyEventHandler.bind(this));
 
-			var elem = e.target;
+				password.addEventListener('mouseup', this._passwordOnmouseupHandler.bind(this));
+				length.addEventListener('change', this._lenghOnChangeHandler.bind(this));
+
+				this.widget
+					.querySelector('.password-generator__password')
+					.value = this.generatePassword(this.length);
+			}
+
+			generateWidgetContent (id) {
+				let widgetContainer = document.getElementById(id);
+				if (!id && this.el) widgetContainer = document.querySelector(this.el);
+
+				// <div class="password-generator">
+				//   <input type="text" class="password-generator__password">password</input>
+				//   <input class="password-generator__button" type="button" value="generate">
+				//   <div class="password-generator__tools">
+				//     <div class="password-generator__length-container">
+				//       <select class="password-generator__length">
+				//         <option value="6">6</option>
+				//         <!-- ... -->
+				//         <option value="16" selected>16</option>
+				//         <!-- ... -->
+				//         <option value="256">256</option>
+				//       </select>
+				//     </div>
+				//     <div class="password-generator__charset-list">
+				//       <label>
+				//         <input type="checkbox" name="uppercase" value="uppercase">
+				//         uppercase
+				//       </label>
+				//       <label>
+				//         <input type="checkbox" name="lowercase" value="lowercase">
+				//         lowercase
+				//       </label>
+				//       <label>
+				//         <input type="checkbox" name="numbers" value="numbers">
+				//         numbers
+				//       </label>
+				//     </div>
+				//   </div>
+				// </div>
+
+				let widget = document.createElement('div');
+				let password = document.createElement('input');
+				let passwordContainer = document.createElement('div');
+				let button = document.createElement('input');
+				let lengthContainer = document.createElement('div');
+				let length = document.createElement('select');
+				let charsetList = document.createElement('div');
+
+				widget.classList.add('password-generator');
+				widget.classList.add('clearfix');
+				password.classList.add('password-generator__password');
+				password.type = 'text';
+				password.value = 'password';
+				passwordContainer.classList.add('password-generator__password-container');
+				button.type = 'button';
+				button.value = 'generate';
+				button.classList.add('password-generator__button');
+				lengthContainer.classList.add('password-generator__length-container');
+				length.classList.add('password-generator__length');
+				this._generateLengthElement(length);
+				charsetList.classList.add('password-generator__charset-list');
+				this._generateCharsetListElement(charsetList);
+
+				passwordContainer.appendChild(password);
+				widget.appendChild(passwordContainer);
+				widget.appendChild(button);
+				lengthContainer.appendChild(length);
+				widget.appendChild(lengthContainer);
+				widgetContainer.appendChild(widget);
+				widget.appendChild(charsetList);
+
+				return widget;
+			}
 
 			//copies password to clipboard
-			if(elem.name === "output"){
+			_passwordOnmouseupHandler(e) {
+				let elem = e.target;
 
 				// selects password and copy it to clipboard
 				// does not work on iOS devices
 				elem.setSelectionRange(0, elem.value.length);
 				document.execCommand('copy');
 			}
-		});
 
-		// binds event handlers to click event
-		// on button "generate" and "reset" to
-		// generate password and reset form
-		document.addEventListener("click", function(e){
+			//shows "copied" notification
+			_onCopyEventHandler (event) {
+				if (document.getElementsByClassName('password-generator__tooltip').length) { return; }
 
-			var form = document.forms['passgen-form'];
-			var elem = e.target;
+				//element about which you want to draw a tooltip
+				let elem = event.target;
 
+				//creates notification message
+				let elemCoords = elem.getBoundingClientRect();
+				let popup = document.createElement('div');
+				let timer;
 
-			//generate password
-			if(elem.type === "button" && elem.name === "generate-button") {
+				popup.classList.toggle('password-generator__tooltip');
+				popup.appendChild(document.createTextNode('copied'));
 
-				var minLenPass = 6;
-				var maxLenPass = 256;
-				var tmpLenPass = +elem.form["pass-length"].value || defaultPasswordLength;
+				let passwordElem = document.querySelector('.password-generator__password')
+				passwordElem.parentNode.insertBefore(popup, passwordElem.nextSibling)
 
-				//sets password length min and max
-				if(tmpLenPass > maxLenPass || tmpLenPass < minLenPass){
-					if(tmpLenPass < minLenPass) { tmpLenPass = minLenPass; }
-					else { tmpLenPass = maxLenPass; }
+				//sets a notification display timeout
+				timer = setTimeout(function () { popup.remove(); }, 1000);
+
+			};
+
+			_lenghOnChangeHandler(event) {
+				let elem = event.target;
+				this.length = parseInt(elem.value);
+			}
+
+			static _defaults () {
+				return {
+					length: 16,
+					minLength: 6,
+					maxLength: 256
 				}
-
-				charsetString = getCharsetString(charset);
-				form["output"].value = generatePassword(charsetString, tmpLenPass);
-
-				form["pass-length"].value = tmpLenPass;
 			}
 
-			//reset settings to default
-			if(elem.type === "button" && elem.name === "reset-button") {
-				resetCharset(charset);
-				form["pass-length"].value = defaultPasswordLength;
-				resetForm(form);
+			_defaults() {
+				let args = Array.prototype.slice.call(arguments);
+				return this.constructor._defaults.apply(this, args);
 			}
 
-			//processing of selected character sets
-			if(elem.type === "checkbox") {
-				checkForm(elem, form, charset);
+			static _getCharsetList() {
+				let list = [];
+				let selector = '.password-generator__charset-list input';
+				if (this.id) {
+					list = document.querySelectorAll(`#${this.id} ${selector}`)
+				} else if (this.el) {
+					list = this.el.querySelectorAll(selector);
+				} else {
+					list = list;
+				}
+				if (!Array.isArray(list)) {
+					list = Array.prototype
+						.filter.apply(list, [function(item) { return item.checked; }])
+						.map(function(item) { return item.name; });
+				}
+				return list.slice();
 			}
 
-		}, false);
+			_getCharsetList() {
+				let args = Array.prototype.slice.call(arguments);
+				return this.constructor._getCharsetList.apply(this, args);
+			}
 
-		// initiates generation's password at document loading
-		document.forms["passgen-form"]["generate-button"].click();
+			_generateLengthElement(container) {
+				for (let l = 0; l <= this.maxLength - this.minLength; l++) {
+					let option = document.createElement('option');
+					let val = l + this.minLength;
+					option.value = val;
+					option.innerHTML = val;
+					if (val === this.length) { option.selected = true; }
+					container.appendChild(option);
+				}
+			}
 
+			_generateCharsetListElement(container) {
+				let charset = this.constructor.charset();
+				for (let s in charset){
+					let input = document.createElement('input');
+					let label = document.createElement('label');
+					input.type = "checkbox";
+					input.name = s;
+					input.value = s;
+					input.checked = true;
+					label.appendChild(input);
+					label.appendChild(document.createTextNode(s));
+					container.appendChild(label);
+				}
+			}
 
+			static charset() {
+				// A-Z 65-90
+				// a-z 97-122
+				// 0-9 48-57
 
-		// assigns hadler to checks cache state
-		// if there new data, updates up to date it.
-		// btw applicationCache deprecated
-		window.applicationCache.addEventListener('updateready', function(event) {
-			window.applicationCache.swapCache();
-		}, false);
+				return {
+					lowercase: Math.floor(Math.random() * (122 - 97 + 1)) + 97,
+					uppercase: Math.floor(Math.random() * (90 - 65 + 1)) + 65,
+					numbers: Math.floor(Math.random() * (57 - 48 + 1)) + 48
+				};
+			}
+
+			charset() {
+				let args = Array.prototype.slice.call(arguments);
+				return this.constructor.charset.apply(this, args);
+			}
+
+			static getASCIIalphanumeric (list=['numbers', 'uppercase', 'lowercase']) {
+				let keys;
+				if (!list.length) { keys = Object.keys(this.charset()); }
+				else { keys = list; }
+
+				return this.charset()[keys[Math.floor(Math.random() * keys.length)]];
+			}
+
+			getASCIIalphanumeric () {
+				let args = Array.prototype.slice.call(arguments);
+				return this.constructor.getASCIIalphanumeric.apply(this, args);
+			}
+
+			static generatePassword (len) {
+				len = len || this._defaults().length;
+				let password = '';
+				let charsetList = this._getCharsetList();
+				if (len > this._defaults().maxLength) { len = this._defaults().maxLength; }
+				if (len < this._defaults().minLength) { len = this._defaults().minLength; }
+				for (; len; len--) password += String.fromCharCode(this.getASCIIalphanumeric(charsetList));
+				return password;
+			}
+
+			generatePassword () {
+				let args = Array.prototype.slice.call(arguments);
+				return this.constructor.generatePassword.apply(this, args);
+			}
+
+			buttonClickHandler (e) {
+				e.preventDefault();
+				let passwordOut = this.widget.querySelector('.password-generator__password');
+				passwordOut.value = this.generatePassword(this.length);
+			}
+		}
+		window.PasswordGeneratorWidget = PasswordGeneratorWidget;
 
 	});
-}
-/**
- * end describtion main loop
-*/
-
-
-//invokes main loop
-main();
-
 })();
-

@@ -1,4 +1,5 @@
-#passgen
+# passgen
+
 Javascript based password generator,
 full client side generation mechanism
 
@@ -8,3 +9,5 @@ full client side generation mechanism
 - uppercase alphabet
 
 By default length from 6 to 256 symbols.
+
+You could check this [here](https://pinepike.github.io/passgen/)
