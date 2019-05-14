@@ -8,15 +8,18 @@
     "build": "gulp build"
   },
   "keywords": [],
-  "author": "Nikolay G <post@noks.ga> (https://github.com/pinepike)",
+  "author": "Nikolay G <sam@snoks.ga> (https://github.com/unref)",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
-    "gulp": "^3.9.1",
+    "del": "^4.1.1",
+    "gulp": "^4.0.2",
     "gulp-autoprefixer": "^4.1.0",
     "gulp-babel": "^7.0.1",
+    "gulp-if": "^2.0.2",
+    "gulp-load-plugins": "^1.5.0",
     "gulp-sourcemaps": "^2.6.4"
   }
 }
