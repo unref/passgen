@@ -10,4 +10,4 @@ full client side generation mechanism
 
 By default length from 6 to 256 symbols.
 
-You could check this [here](https://pinepike.github.io/passgen/)
+You could check it [here](docs/index.html)
