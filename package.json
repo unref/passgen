@@ -7,8 +7,8 @@
     "watch": "gulp watch",
     "build": "gulp build"
   },
-  "keywords": [],
-  "author": "Nikolay G <sam@snoks.ga> (https://github.com/unref)",
+  "keywords": ["password", "generator"],
+  "author": "Nikolay G <unref@inbox.ru> (https://github.com/unref)",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.26.0",
