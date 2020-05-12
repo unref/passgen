@@ -39,7 +39,7 @@ gulp.task('index', function () {
 })
 
 gulp.task('watch', function() {
-  gulp.watch('src/**/*.*', ['css', 'js', 'img', 'index'])
+  gulp.watch('src/**/*.*', gulp.series(['css', 'js', 'img', 'index']));
 });
 
 gulp.task('clean', (_) => {
