@@ -5,7 +5,7 @@ const del = require('del');
 
 
 const $ = gulpLoadPlugins();
-const paths = { dist: 'dist' };
+const paths = { dist: 'dist', js: 'dist/js' };
 const isDevelopment = !process.env.NODE_ENV || process.env.NODE_ENV === 'dev';
 
 
@@ -19,13 +19,22 @@ gulp.task('css', function() {
 });
 
 gulp.task('js', function () {
-  return gulp.src('src/**/*.js')
+  return gulp
+    .src('src/**/*.js')
     .pipe($.if(isDevelopment, $.sourcemaps.init()))
     .pipe($.babel({
-      presets: ['env', 'es2015']
+      presets: ['env', 'es2015'],
     }))
     .pipe($.if(isDevelopment, $.sourcemaps.write()))
     .pipe(gulp.dest(paths.dist))
+});
+
+gulp.task('jslibs', function() {
+  return gulp
+    .src([
+      'node_modules/babel-polyfill/dist/polyfill.js',
+    ])
+    .pipe(gulp.dest(paths.js))
 });
 
 gulp.task('img', function () {
@@ -39,7 +48,7 @@ gulp.task('index', function () {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('src/**/*.*', gulp.series(['css', 'js', 'img', 'index']));
+  gulp.watch('src/**/*.*', gulp.series(['css', 'js', 'jslibs', 'img', 'index']));
 });
 
 gulp.task('clean', (cb) => {
@@ -47,4 +56,4 @@ gulp.task('clean', (cb) => {
     cb();
 });
 
-gulp.task('build', gulp.series('clean', 'css', 'js', 'img', 'index'));
+gulp.task('build', gulp.series('clean', 'css', 'js', 'jslibs', 'img', 'index'));
