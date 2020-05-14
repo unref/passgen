@@ -1,4 +1,38 @@
 ; (function () {
+
+	class PasswordGeneratorCore {
+			static presets() {
+				return {
+					length: 16,
+					minLength: 6,
+					maxLength: 256,
+					charTypes: ['numbers', 'uppercase', 'lowercase', 'special'],
+					charset: {
+						'numbers': '1234567890',
+						'uppercase': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+						'lowercase': 'abcdefghijklmnopqrstuvwxyz',
+						'special': '!#$%&()*+,-./:;<=>?@[]^_{|}~'
+					}
+				};
+			}
+
+			static getRandomChar(selectedCharTypes) {
+				const types = selectedCharTypes && selectedCharTypes.length && selectedCharTypes || this.presets().charTypes;
+				const randomCharType = types[Math.floor(Math.random() * types.length)];
+				const charsetByType = this.presets().charset[randomCharType];
+				const randomChar = charsetByType[Math.floor(Math.random() * charsetByType.length)];
+				return randomChar;
+			}
+
+			static generatePassword (len, selectedCharTypes) {
+				len = len || this.presets().length;
+				if (len > this.presets().maxLength) { len = this.presets().maxLength; }
+				if (len < this.presets().minLength) { len = this.presets().minLength; }
+				return Array.from(Array(len), () => this.getRandomChar(selectedCharTypes)).join('');
+			}
+
+	}
+
 	window.addEventListener('DOMContentLoaded', function () {
 		"use strict";
 
@@ -7,12 +41,14 @@
 		//    id: 'id of widget container element'
 		// })
 
+
 		class PasswordGeneratorWidget {
 			constructor(options){
 				options = options || {};
 				this.length = options.length || 16;
-				this.minLength = this._defaults().minLength || 6;
-				this.maxLength = this._defaults().maxLength || 256;
+				this.core = PasswordGeneratorCore;
+				this.minLength = this.core.presets().minLength || 6;
+				this.maxLength = this.core.presets().maxLength || 256;
 				this.id = options.id;
 				if (!options.id) this.el = options.el || 'body';
 				this.init();
@@ -76,7 +112,7 @@
 
 				this.widget
 					.querySelector('.password-generator__password')
-					.value = this.generatePassword(this.length);
+					.value = this.core.generatePassword(this.length);
 			}
 
 			generateWidgetContent (id) {
@@ -185,18 +221,7 @@
 				this.length = parseInt(elem.value);
 			}
 
-			static _defaults () {
-				return {
-					length: 16,
-					minLength: 6,
-					maxLength: 256
-				}
-			}
 
-			_defaults() {
-				let args = Array.prototype.slice.call(arguments);
-				return this.constructor._defaults.apply(this, args);
-			}
 
 			static _getCharsetList() {
 				let list = [];
@@ -233,7 +258,7 @@
 			}
 
 			_generateCharsetListElement(container) {
-				let charset = this.constructor.charset();
+				let charset = this.core.presets().charset;
 				for (let s in charset){
 					let input = document.createElement('input');
 					let label = document.createElement('label');
@@ -247,55 +272,12 @@
 				}
 			}
 
-			static charset() {
-				// A-Z 65-90
-				// a-z 97-122
-				// 0-9 48-57
 
-				return {
-					lowercase: Math.floor(Math.random() * (122 - 97 + 1)) + 97,
-					uppercase: Math.floor(Math.random() * (90 - 65 + 1)) + 65,
-					numbers: Math.floor(Math.random() * (57 - 48 + 1)) + 48
-				};
-			}
-
-			charset() {
-				let args = Array.prototype.slice.call(arguments);
-				return this.constructor.charset.apply(this, args);
-			}
-
-			static getASCIIalphanumeric (list=['numbers', 'uppercase', 'lowercase']) {
-				let keys;
-				if (!list.length) { keys = Object.keys(this.charset()); }
-				else { keys = list; }
-
-				return this.charset()[keys[Math.floor(Math.random() * keys.length)]];
-			}
-
-			getASCIIalphanumeric () {
-				let args = Array.prototype.slice.call(arguments);
-				return this.constructor.getASCIIalphanumeric.apply(this, args);
-			}
-
-			static generatePassword (len) {
-				len = len || this._defaults().length;
-				let password = '';
-				let charsetList = this._getCharsetList();
-				if (len > this._defaults().maxLength) { len = this._defaults().maxLength; }
-				if (len < this._defaults().minLength) { len = this._defaults().minLength; }
-				for (; len; len--) password += String.fromCharCode(this.getASCIIalphanumeric(charsetList));
-				return password;
-			}
-
-			generatePassword () {
-				let args = Array.prototype.slice.call(arguments);
-				return this.constructor.generatePassword.apply(this, args);
-			}
 
 			buttonClickHandler (e) {
 				e.preventDefault();
 				let passwordOut = this.widget.querySelector('.password-generator__password');
-				passwordOut.value = this.generatePassword(this.length);
+				passwordOut.value = this.core.generatePassword(this.length, this._getCharsetList());
 			}
 		}
 		window.PasswordGeneratorWidget = PasswordGeneratorWidget;
