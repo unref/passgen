@@ -36,4 +36,24 @@ function renderError (err) {
 	document.body.appendChild(container);
 }
 
+function createElement(tag, props, children) {
+    const element = document.createElement(tag);
 
+    Object.keys(props).forEach(function(key) {
+        if (key.substring(0, 'data-'.length) === 'data-') {
+            element.setAttribute(key, props[key]);
+        } else {
+            element[key] = props[key];
+        }
+    });
+
+    children && children.forEach(function(child) {
+        if (typeof child === 'string') {
+            child = document.createTextNode(child);
+        }
+
+        element.appendChild(child);
+    });
+
+    return element;
+}

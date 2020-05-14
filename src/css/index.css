@@ -3,3 +3,14 @@
   display: flex;
   justify-content: center;
 }
+
+.error {
+  position: fixed;
+  left: 0;
+  top: 0;
+  color: #fff;
+  padding: 0.2em;
+  border-radius: 0.1em;
+  background: #f33;
+  z-index: 9999;
+}
