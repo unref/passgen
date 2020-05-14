@@ -26,25 +26,25 @@ gulp.task('js', function () {
     }))
     .pipe($.if(isDevelopment, $.sourcemaps.write()))
     .pipe(gulp.dest(paths.dist))
-})
+});
 
 gulp.task('img', function () {
   return gulp.src('src/imgs/**/*.*')
     .pipe(gulp.dest(`${paths.dist}/imgs`))
-})
+});
 
 gulp.task('index', function () {
   return gulp.src('src/index.html')
     .pipe(gulp.dest(paths.dist))
-})
+});
 
 gulp.task('watch', function() {
   gulp.watch('src/**/*.*', gulp.series(['css', 'js', 'img', 'index']));
 });
 
-gulp.task('clean', (_) => {
+gulp.task('clean', (cb) => {
     del([`${paths.dist}/*`], {dot: true});
-    _();
+    cb();
 });
 
 gulp.task('build', gulp.series('clean', 'css', 'js', 'img', 'index'));
