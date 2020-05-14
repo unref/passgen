@@ -54,48 +54,7 @@
 				this.init();
 			}
 
-			urlparser (url) {
-				let a = document.createElement('a');
-				a.href = url;
-				return {
-					protocol: a.protocol,
-					hostname: a.hostname,
-					port: a.port,
-					pathname: a.pathname,
-					query: a.search,
-					hash: a.hash,
-					host: a.host
-				}
-			}
-
-			errorHandler (msg, url, row, col, error) {
-				let err = {
-					message: msg,
-					url: url,
-					row: row,
-					col: col
-				};
-				console.error(err);
-				this.renderError(err);
-				return false;
-			}
-
-			renderError (err) {
-				let container = document.createElement('div')
-				container.classList.add('password-generator__error');
-				container.textContent = [
-					this.urlparser(err.url).pathname || ''
-					, err.row || ''
-					, err.col || ''
-					, err.message || ''
-				].join(':');
-				document.body.appendChild(container);
-			}
-
-
 			init () {
-				window.onerror = this.errorHandler.bind(this);
-
 				this.widget = this.generateWidgetContent(this.id);
 
 				let button = this.widget.querySelector('.password-generator__button');

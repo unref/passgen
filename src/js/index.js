@@ -1,7 +1,9 @@
 // instantiate widget
-window.addEventListener('load', function () {
-  new PasswordGeneratorWidget({
-    id: 'password-generator',
-    length: 16
-  });
+window.addEventListener('DOMContentLoaded', function () {
+	window.onerror = this.errorHandler.bind(this);
+
+	new PasswordGeneratorWidget({
+		id: 'password-generator',
+		length: 16
+	});
 });
