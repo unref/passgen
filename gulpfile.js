@@ -24,6 +24,8 @@ gulp.task('js', function () {
     .pipe($.if(isDevelopment, $.sourcemaps.init()))
     .pipe($.babel({
       presets: ['env', 'es2015'],
+      plugins: ['syntax-class-properties',
+                'transform-class-properties']
     }))
     .pipe($.if(isDevelopment, $.sourcemaps.write()))
     .pipe(gulp.dest(paths.dist))
@@ -48,7 +50,8 @@ gulp.task('index', function () {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('src/**/*.*', gulp.series(['css', 'js', 'jslibs', 'img', 'index']));
+  gulp.watch('src/**/*.*', gulp.series([
+    'css', 'js', 'jslibs', 'img', 'index']));
 });
 
 gulp.task('clean', (cb) => {
@@ -56,4 +59,5 @@ gulp.task('clean', (cb) => {
     cb();
 });
 
-gulp.task('build', gulp.series('clean', 'css', 'js', 'jslibs', 'img', 'index'));
+gulp.task('build', gulp.series([
+  'clean', 'css', 'js', 'jslibs', 'img', 'index']));
