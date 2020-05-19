@@ -2,36 +2,33 @@
 	"use strict";
 
 	class PasswordGeneratorCore {
-			static presets() {
-				return {
-					length: 16,
-					minLength: 6,
-					maxLength: 256,
-					charTypes: ['numbers', 'uppercase', 'lowercase', 'special'],
-					charset: {
-						'numbers': '1234567890',
-						'uppercase': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-						'lowercase': 'abcdefghijklmnopqrstuvwxyz',
-						'special': '!#$%&()*+,-./:;<=>?@[]^_{|}~'
-					}
-				};
+			static presets = {
+				length: 16,
+				minLength: 6,
+				maxLength: 256,
+				charTypes: ['numbers', 'uppercase', 'lowercase', 'special'],
+				charset: {
+					'numbers': '1234567890',
+					'uppercase': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+					'lowercase': 'abcdefghijklmnopqrstuvwxyz',
+					'special': '!#$%&()*+,-./:;<=>?@[]^_{|}~'
+				}
 			}
 
 			static getRandomChar(selectedCharTypes) {
-				const types = selectedCharTypes && selectedCharTypes.length && selectedCharTypes || this.presets().charTypes;
+				const types = selectedCharTypes && selectedCharTypes.length && selectedCharTypes || this.presets.charTypes;
 				const randomCharType = types[Math.floor(Math.random() * types.length)];
-				const charsetByType = this.presets().charset[randomCharType];
+				const charsetByType = this.presets.charset[randomCharType];
 				const randomChar = charsetByType[Math.floor(Math.random() * charsetByType.length)];
 				return randomChar;
 			}
 
 			static generatePassword (len, selectedCharTypes) {
-				len = len || this.presets().length;
-				if (len > this.presets().maxLength) { len = this.presets().maxLength; }
-				if (len < this.presets().minLength) { len = this.presets().minLength; }
+				len = len || this.presets.length;
+				if (len > this.presets.maxLength) { len = this.presets.maxLength; }
+				if (len < this.presets.minLength) { len = this.presets.minLength; }
 				return Array.from(Array(len), () => this.getRandomChar(selectedCharTypes)).join('');
 			}
-
 	}
 
 
@@ -46,8 +43,8 @@
 			options = options || {};
 			this.length = options.length || 16;
 			this.core = PasswordGeneratorCore;
-			this.minLength = this.core.presets().minLength || 6;
-			this.maxLength = this.core.presets().maxLength || 256;
+			this.minLength = this.core.presets.minLength || 6;
+			this.maxLength = this.core.presets.maxLength || 256;
 			this.id = options.id;
 			if (!options.id) this.el = options.el || 'body';
 			this.init();
@@ -209,7 +206,7 @@
 		}
 
 		generateCharsetListElement(container) {
-			let charset = this.core.presets().charset;
+			let charset = this.core.presets.charset;
 			for (let s in charset){
 				let input = document.createElement('input');
 				let label = document.createElement('label');
