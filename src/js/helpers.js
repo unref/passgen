@@ -27,12 +27,11 @@ function errorHandler (msg, url, row, col, error) {
 function renderError (err) {
 	let container = document.createElement('div')
 	container.classList.add('error');
-	container.textContent = [
-		this.urlparser(err.url).pathname || ''
-		, err.row || ''
-		, err.col || ''
-		, err.message || ''
-	].join(':');
+	container.textContent = `
+		${this.urlparser(err.url).pathname || ''}:
+		${err.row || ''}:
+		${err.col || ''}:
+		${err.message || ''}`;
 	document.body.appendChild(container);
 }
 
