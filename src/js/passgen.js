@@ -31,116 +31,80 @@
 			}
 	}
 
-
-	// new PasswordGeneratorWidget({
-	//    length: 'length of password',
-	//    id: 'id of widget container element'
-	// })
-
-
 	class PasswordGeneratorWidget {
+		CSS_CLASS_NAMES = {
+			BUTTON: 'password-generator__button',
+			HIDE_BUTTON: 'password-generator__hide-button',
+			COPY_BUTTON: 'password-generator__copy-button',
+			PASSWORD: 'password-generator__password',
+			PASSWORD_CONTAINER: 'password-generator__password-container',
+			LENGTH: 'password-generator__length',
+			LENGTH_CONTAINER: 'password-generator__length-container',
+			TOOLBAR: 'password-generator__toolbar',
+			PASSWORD_GENERATOR: 'password-generator',
+			CLEARFIX: 'clearfix',
+			TOOLTIP: 'password-generator__tooltip',
+			CHARSET_LIST: 'password-generator__charset-list',
+		};
+
+		SELECTORS = {
+			CONTAINER: '#password-generator',
+		};
+
+		elements = {};
+
+		CONSTANTS = {DELAY: 1000};
+
+		MESSAGES = {
+			PASSWORD_COPIED: 'copied',
+			HIDE: 'hide',
+			SHOW: 'show',
+		};
+
 		constructor(options){
 			options = options || {};
-			this.length = options.length || 16;
 			this.core = PasswordGeneratorCore;
-			this.minLength = this.core.presets.minLength || 6;
-			this.maxLength = this.core.presets.maxLength || 256;
-			this.id = options.id;
-			if (!options.id) this.el = options.el || 'body';
-			this.init();
+			this.createElement = createElement;
+			this.length = options.length || this.core.presets.length;
+			this.minLength = this.core.presets.minLength;
+			this.maxLength = this.core.presets.maxLength;
+			this.container = document.querySelector(options.selector || this.SELECTORS.CONTAINER);
+			this.charset = options.charset || this.core.presets.charset;
+			this.widget = this.generateWidgetContent(this.container);
+			this.assignListeners();
+			this.elements.password.value = this.core.generatePassword(this.length);
 		}
 
-		init () {
-			this.widget = this.generateWidgetContent(this.id);
-
-			let button = this.widget.querySelector('.password-generator__button');
-			let password = this.widget.querySelector('.password-generator__password');
-			let length = this.widget.querySelector('.password-generator__length');
-
-			button.addEventListener('click', this.buttonClickHandler.bind(this));
-
+		assignListeners() {
+			this.elements.button.addEventListener('click', this.buttonClickHandler.bind(this));
 			//shows notification after password was copied
 			this.widget.addEventListener('copy', this.onCopyEventHandler.bind(this));
-
-			password.addEventListener('mouseup', this.passwordOnmouseupHandler.bind(this));
-			length.addEventListener('change', this.lenghOnChangeHandler.bind(this));
-
-			this.widget
-				.querySelector('.password-generator__password')
-				.value = this.core.generatePassword(this.length);
+			this.elements.password.addEventListener('mouseup', this.passwordOnMouseUpHandler.bind(this));
+			this.elements.length.addEventListener('change', this.lenghOnChangeHandler.bind(this));
 		}
 
-		generateWidgetContent (id) {
-			let widgetContainer = document.getElementById(id);
-			if (!id && this.el) widgetContainer = document.querySelector(this.el);
-
-			// <div class="password-generator">
-			//   <input type="text" class="password-generator__password">password</input>
-			//   <input class="password-generator__button" type="button" value="generate">
-			//   <div class="password-generator__tools">
-			//     <div class="password-generator__length-container">
-			//       <select class="password-generator__length">
-			//         <option value="6">6</option>
-			//         <!-- ... -->
-			//         <option value="16" selected>16</option>
-			//         <!-- ... -->
-			//         <option value="256">256</option>
-			//       </select>
-			//     </div>
-			//     <div class="password-generator__charset-list">
-			//       <label>
-			//         <input type="checkbox" name="uppercase" value="uppercase">
-			//         uppercase
-			//       </label>
-			//       <label>
-			//         <input type="checkbox" name="lowercase" value="lowercase">
-			//         lowercase
-			//       </label>
-			//       <label>
-			//         <input type="checkbox" name="numbers" value="numbers">
-			//         numbers
-			//       </label>
-			//     </div>
-			//   </div>
-			// </div>
-
-			let widget = document.createElement('div');
-			let password = document.createElement('input');
-			let passwordContainer = document.createElement('div');
-			let button = document.createElement('input');
-			let lengthContainer = document.createElement('div');
-			let length = document.createElement('select');
-			let charsetList = document.createElement('div');
-
-			widget.classList.add('password-generator');
-			widget.classList.add('clearfix');
-			password.classList.add('password-generator__password');
-			password.type = 'text';
-			password.value = 'password';
-			passwordContainer.classList.add('password-generator__password-container');
-			button.type = 'button';
-			button.value = 'generate';
-			button.classList.add('password-generator__button');
-			lengthContainer.classList.add('password-generator__length-container');
-			length.classList.add('password-generator__length');
-			this.generateLengthElement(length);
-			charsetList.classList.add('password-generator__charset-list');
-			this.generateCharsetListElement(charsetList);
-
-			passwordContainer.appendChild(password);
-			widget.appendChild(passwordContainer);
-			widget.appendChild(button);
-			lengthContainer.appendChild(length);
-			widget.appendChild(lengthContainer);
+		generateWidgetContent(widgetContainer) {
+			// const widgetContainer = document.querySelector(id);
+			const password = this.createElement('input', {className: this.CSS_CLASS_NAMES.PASSWORD, type: 'text', value: 'password'});
+			this.elements.password = password;
+			const passwordContainer = this.createElement('div', {className: this.CSS_CLASS_NAMES.PASSWORD_CONTAINER}, [password]);
+			const generateButton = this.createElement('input', {className: this.CSS_CLASS_NAMES.BUTTON, type: 'button', value: 'generate'});
+			this.elements.button = generateButton;
+			const toolbarContainer = this.createElement('div', {className: this.CSS_CLASS_NAMES.TOOLBAR}, [generateButton]);
+			const length = this.generateLengthElement();
+			const lengthContainer = this.createElement('div', {className: this.CSS_CLASS_NAMES.LENGTH_CONTAINER}, [length]);
+			this.elements.length = length;
+			const charsetList = this.generateCharsetListElement();
+			this.elements.charsetList = charsetList;
+			const widget = this.createElement('div', {className: `${this.CSS_CLASS_NAMES.PASSWORD_GENERATOR} ${this.CSS_CLASS_NAMES.CLEARFIX}`},
+				[passwordContainer, toolbarContainer, lengthContainer, charsetList]);
 			widgetContainer.appendChild(widget);
-			widget.appendChild(charsetList);
-
 			return widget;
 		}
 
 		//copies password to clipboard
-		passwordOnmouseupHandler(e) {
-			let elem = e.target;
+		passwordOnMouseUpHandler(e) {
+			const elem = e.target;
 
 			// selects password and copy it to clipboard
 			// does not work on iOS devices
@@ -150,82 +114,60 @@
 
 		//shows "copied" notification
 		onCopyEventHandler (event) {
-			if (document.getElementsByClassName('password-generator__tooltip').length) { return; }
-
-			//element about which you want to draw a tooltip
-			let elem = event.target;
+			if (this.elements.tooltip) { return; }
 
 			//creates notification message
-			let elemCoords = elem.getBoundingClientRect();
-			let popup = document.createElement('div');
-			let timer;
-
-			popup.classList.toggle('password-generator__tooltip');
-			popup.appendChild(document.createTextNode('copied'));
-
-			let passwordElem = document.querySelector('.password-generator__password')
-			passwordElem.parentNode.insertBefore(popup, passwordElem.nextSibling)
+			const tooltip = this.createElement('div', {className: this.CSS_CLASS_NAMES.TOOLTIP}, [this.MESSAGES.PASSWORD_COPIED]);
+			this.elements.tooltip = tooltip;
+			const passwordElem = this.elements.password;
+			passwordElem.parentNode.insertBefore(tooltip, passwordElem.nextSibling)
 
 			//sets a notification display timeout
-			timer = setTimeout(function () { popup.remove(); }, 1000);
-
+			setTimeout(() => { tooltip.remove(); this.elements.tooltip = null; }, this.CONSTANTS.DELAY);
 		};
 
 		lenghOnChangeHandler(event) {
-			let elem = event.target;
+			const elem = event.target;
 			this.length = parseInt(elem.value);
 		}
 
 		getCharsetList() {
-			let list = [];
-			let selector = '.password-generator__charset-list input';
-			if (this.id) {
-				list = document.querySelectorAll(`#${this.id} ${selector}`)
-			} else if (this.el) {
-				list = this.el.querySelectorAll(selector);
-			} else {
-				list = list;
-			}
-			if (!Array.isArray(list)) {
-				list = Array.prototype
-					.filter.apply(list, [function(item) { return item.checked; }])
-					.map(function(item) { return item.name; });
-			}
-			return list.slice();
+			let list = this.elements.charsetList.items.slice() || [];
+			list = list.filter(item => item.checked).map(item => item.name);
+			return list;
 		}
 
-		generateLengthElement(container) {
+		generateLengthElement() {
+			const container = this.createElement('select', {className: this.CSS_CLASS_NAMES.LENGTH});
+
 			for (let l = 0; l <= this.maxLength - this.minLength; l++) {
-				let option = document.createElement('option');
-				let val = l + this.minLength;
-				option.value = val;
-				option.innerHTML = val;
-				if (val === this.length) { option.selected = true; }
+				const value = l + this.minLength;
+				const option = this.createElement('option', {value: value, innerHTML: value, selected: value === this.length ? true : false});
 				container.appendChild(option);
 			}
+
+			return container;
 		}
 
-		generateCharsetListElement(container) {
-			let charset = this.core.presets.charset;
-			for (let s in charset){
-				let input = document.createElement('input');
-				let label = document.createElement('label');
-				input.type = "checkbox";
-				input.name = s;
-				input.value = s;
-				input.checked = true;
-				label.appendChild(input);
-				label.appendChild(document.createTextNode(s));
+		generateCharsetListElement() {
+			const container = this.createElement('div', {className: this.CSS_CLASS_NAMES.CHARSET_LIST, items: []});
+			const charset = this.charset;
+
+			for (let str in charset){
+				const input = this.createElement('input', {type: 'checkbox', name: str, value: str, checked: true});
+				const label = this.createElement('label', {}, [input, str]);
+				container.items.push(input);
 				container.appendChild(label);
 			}
+
+			return container;
 		}
 
 		buttonClickHandler (e) {
 			e.preventDefault();
-			let passwordOut = this.widget.querySelector('.password-generator__password');
-			passwordOut.value = this.core.generatePassword(this.length, this.getCharsetList());
+			this.elements.password.value = this.core.generatePassword(this.length, this.getCharsetList());
 		}
 	}
-	window.PasswordGeneratorWidget = PasswordGeneratorWidget;
 
+	window.PasswordGeneratorWidget = PasswordGeneratorWidget;
 })();
