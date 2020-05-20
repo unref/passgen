@@ -34,8 +34,6 @@
 	class PasswordGeneratorWidget {
 		CSS_CLASS_NAMES = {
 			BUTTON: 'password-generator__button',
-			HIDE_BUTTON: 'password-generator__hide-button',
-			COPY_BUTTON: 'password-generator__copy-button',
 			PASSWORD: 'password-generator__password',
 			PASSWORD_CONTAINER: 'password-generator__password-container',
 			LENGTH: 'password-generator__length',
@@ -84,20 +82,18 @@
 		}
 
 		generateWidgetContent(widgetContainer) {
-			// const widgetContainer = document.querySelector(id);
 			const password = this.createElement('input', {className: this.CSS_CLASS_NAMES.PASSWORD, type: 'text', value: 'password'});
 			this.elements.password = password;
 			const passwordContainer = this.createElement('div', {className: this.CSS_CLASS_NAMES.PASSWORD_CONTAINER}, [password]);
 			const generateButton = this.createElement('input', {className: this.CSS_CLASS_NAMES.BUTTON, type: 'button', value: 'generate'});
 			this.elements.button = generateButton;
-			const toolbarContainer = this.createElement('div', {className: this.CSS_CLASS_NAMES.TOOLBAR}, [generateButton]);
 			const length = this.generateLengthElement();
-			const lengthContainer = this.createElement('div', {className: this.CSS_CLASS_NAMES.LENGTH_CONTAINER}, [length]);
 			this.elements.length = length;
+			const lengthContainer = this.createElement('div', {className: this.CSS_CLASS_NAMES.LENGTH_CONTAINER}, [length]);
 			const charsetList = this.generateCharsetListElement();
 			this.elements.charsetList = charsetList;
 			const widget = this.createElement('div', {className: `${this.CSS_CLASS_NAMES.PASSWORD_GENERATOR} ${this.CSS_CLASS_NAMES.CLEARFIX}`},
-				[passwordContainer, toolbarContainer, lengthContainer, charsetList]);
+				[passwordContainer, generateButton, lengthContainer, charsetList]);
 			widgetContainer.appendChild(widget);
 			return widget;
 		}
