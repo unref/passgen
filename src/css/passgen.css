@@ -60,19 +60,16 @@
   float: right;
 }
 
-.password-generator__charset-list label {
+.password-generator__charset-list__label {
   display: block;
   margin-bottom: 1em;
   cursor: pointer;
   font-size: 1.25em;
-}
-
-.password-generator__charset-list label {
   white-space: nowrap;
   padding-left: 0.25em;
 }
 
-.password-generator__charset-list [type="checkbox"] {
+.password-generator__charset-list__checkbox {
   transform: translateX(-0.5em) scale(1.5);
 }
 
@@ -93,8 +90,4 @@
   content: '';
   display: block;
   clear: both;
-}
-
-@media screen and (max-width : 480px){
-
 }

@@ -1,4 +1,4 @@
-; (function () {
+;(function () {
 	"use strict";
 
 	class PasswordGeneratorCore {
@@ -43,6 +43,8 @@
 			CLEARFIX: 'clearfix',
 			TOOLTIP: 'password-generator__tooltip',
 			CHARSET_LIST: 'password-generator__charset-list',
+			CHARSET_LIST_LABEL: 'password-generator__charset-list__label',
+			CHARSET_LIST_CHECKBOX: 'password-generator__charset-list__checkbox',
 		};
 
 		SELECTORS = {
@@ -150,8 +152,8 @@
 			const charset = this.charset;
 
 			for (let str in charset){
-				const input = this.createElement('input', {type: 'checkbox', name: str, value: str, checked: true});
-				const label = this.createElement('label', {}, [input, str]);
+				const input = this.createElement('input', {className: this.CSS_CLASS_NAMES.CHARSET_LIST_CHECKBOX, type: 'checkbox', name: str, value: str, checked: true});
+				const label = this.createElement('label', {className: this.CSS_CLASS_NAMES.CHARSET_LIST_LABEL}, [input, str]);
 				container.items.push(input);
 				container.appendChild(label);
 			}
