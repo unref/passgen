@@ -4,6 +4,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 	new PasswordGeneratorWidget({
 		selector: '#password-generator',
-		length: 16
+		length: 16,
+		charTypes: ['numbers', 'uppercase', 'lowercase'],
 	});
 });

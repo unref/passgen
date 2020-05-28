@@ -70,17 +70,18 @@
 			this.maxLength = this.core.presets.maxLength;
 			this.container = document.querySelector(options.selector || this.SELECTORS.CONTAINER);
 			this.charset = options.charset || this.core.presets.charset;
+			this.charTypes = options.charTypes || this.core.presets.charTypes;
 			this.widget = this.generateWidgetContent(this.container);
 			this.assignListeners();
 			this.elements.password.value = this.core.generatePassword(this.length);
 		}
 
 		assignListeners() {
-			this.elements.button.addEventListener('click', this.buttonClickHandler.bind(this));
+			this.elements.button.addEventListener('click', this.buttonClickHandler);
 			//shows notification after password was copied
-			this.widget.addEventListener('copy', this.onCopyEventHandler.bind(this));
-			this.elements.password.addEventListener('mouseup', this.passwordOnMouseUpHandler.bind(this));
-			this.elements.length.addEventListener('change', this.lenghOnChangeHandler.bind(this));
+			this.widget.addEventListener('copy', this.onCopyEventHandler);
+			this.elements.password.addEventListener('mouseup', this.passwordOnMouseUpHandler);
+			this.elements.length.addEventListener('change', this.lenghOnChangeHandler);
 		}
 
 		generateWidgetContent(widgetContainer) {
@@ -101,17 +102,17 @@
 		}
 
 		//copies password to clipboard
-		passwordOnMouseUpHandler(e) {
+		passwordOnMouseUpHandler = (e) => {
 			const elem = e.target;
 
 			// selects password and copy it to clipboard
 			// does not work on iOS devices
 			elem.setSelectionRange(0, elem.value.length);
 			document.execCommand('copy');
-		}
+		};
 
 		//shows "copied" notification
-		onCopyEventHandler (event) {
+		onCopyEventHandler = (event) => {
 			if (this.elements.tooltip) { return; }
 
 			//creates notification message
@@ -124,10 +125,10 @@
 			setTimeout(() => { tooltip.remove(); this.elements.tooltip = null; }, this.CONSTANTS.DELAY);
 		};
 
-		lenghOnChangeHandler(event) {
+		lenghOnChangeHandler = (event) => {
 			const elem = event.target;
 			this.length = parseInt(elem.value);
-		}
+		};
 
 		getCharsetList() {
 			let list = this.elements.charsetList.items.slice() || [];
@@ -152,7 +153,7 @@
 			const charset = this.charset;
 
 			for (let str in charset){
-				const input = this.createElement('input', {className: this.CSS_CLASS_NAMES.CHARSET_LIST_CHECKBOX, type: 'checkbox', name: str, value: str, checked: true});
+				const input = this.createElement('input', {className: this.CSS_CLASS_NAMES.CHARSET_LIST_CHECKBOX, type: 'checkbox', name: str, value: str, checked: this.charTypes.includes(str) ? true : false});
 				const label = this.createElement('label', {className: this.CSS_CLASS_NAMES.CHARSET_LIST_LABEL}, [input, str]);
 				container.items.push(input);
 				container.appendChild(label);
@@ -161,10 +162,10 @@
 			return container;
 		}
 
-		buttonClickHandler (e) {
+		buttonClickHandler = (e) => {
 			e.preventDefault();
 			this.elements.password.value = this.core.generatePassword(this.length, this.getCharsetList());
-		}
+		};
 	}
 
 	window.PasswordGeneratorWidget = PasswordGeneratorWidget;
