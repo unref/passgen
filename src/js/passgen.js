@@ -62,17 +62,28 @@
 		};
 
 		constructor(options){
-			options = options || {};
+			this.injectDependencies();
+			this.initOptions(options);
+			this.initWidget();
+			this.assignListeners();
+		}
+
+		injectDependencies() {
 			this.core = PasswordGeneratorCore;
 			this.createElement = createElement;
+		}
+
+		initOptions(options = {}) {
 			this.length = options.length || this.core.presets.length;
-			this.minLength = this.core.presets.minLength;
-			this.maxLength = this.core.presets.maxLength;
+			this.minLength = options.minLength || this.core.presets.minLength;
+			this.maxLength = options.maxLength || this.core.presets.maxLength;
 			this.container = document.querySelector(options.selector || this.SELECTORS.CONTAINER);
 			this.charset = options.charset || this.core.presets.charset;
 			this.charTypes = options.charTypes || this.core.presets.charTypes;
+		}
+
+		initWidget() {
 			this.widget = this.generateWidgetContent(this.container);
-			this.assignListeners();
 			this.elements.password.value = this.core.generatePassword(this.length);
 		}
 
