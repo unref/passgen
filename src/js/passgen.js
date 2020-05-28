@@ -161,9 +161,8 @@
 
 		generateCharsetListElement() {
 			const container = this.createElement('div', {className: this.CSS_CLASS_NAMES.CHARSET_LIST, items: []});
-			const charset = this.charset;
 
-			for (let str in charset){
+			for (let str in this.charset){
 				const input = this.createElement('input', {className: this.CSS_CLASS_NAMES.CHARSET_LIST_CHECKBOX, type: 'checkbox', name: str, value: str, checked: this.charTypes.includes(str) ? true : false});
 				const label = this.createElement('label', {className: this.CSS_CLASS_NAMES.CHARSET_LIST_LABEL}, [input, str]);
 				container.items.push(input);

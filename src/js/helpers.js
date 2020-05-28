@@ -1,5 +1,5 @@
 function urlparser (url) {
-	let a = document.createElement('a');
+	const a = document.createElement('a');
 	a.href = url;
 	return {
 		protocol: a.protocol,
@@ -13,7 +13,7 @@ function urlparser (url) {
 }
 
 function errorHandler (msg, url, row, col, error) {
-	let err = {
+	const err = {
 		message: msg,
 		url: url,
 		row: row,
@@ -25,7 +25,7 @@ function errorHandler (msg, url, row, col, error) {
 }
 
 function renderError (err) {
-	let container = document.createElement('div')
+	const container = document.createElement('div')
 	container.classList.add('error');
 	container.textContent = `
 		${this.urlparser(err.url).pathname || ''}:
