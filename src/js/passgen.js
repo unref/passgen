@@ -84,7 +84,7 @@
 
 		initWidget() {
 			this.widget = this.generateWidgetContent(this.container);
-			this.elements.password.value = this.core.generatePassword(this.length);
+			this.elements.password.value = this.core.generatePassword(this.length, this.getCharsetList());
 		}
 
 		assignListeners() {
